@@ -1,30 +1,50 @@
 from bs4 import BeautifulSoup
 import requests
 
-response = requests.get("https://news.ycombinator.com/")
+URL = "https://web.archive.org/web/20200514054348/https://www.empireonline.com/movies/features/best-movies-2/"
 
-yc_web_page = response.text
+response = requests.get(URL)
 
-soup = BeautifulSoup(yc_web_page, "html.parser")
+empire_web_page = response.text
 
-articles = soup.find_all(name="a", class_="storylink")
-article_texts = []
-article_links = []
-for article_tag in articles:
-    text = article_tag.getText()
-    article_texts.append(text)
-    link = article_tag.get("href")
-    article_links.append(link)
+soup = BeautifulSoup(empire_web_page, "html.parser")
 
-article_upvotes = [int(score.getText().split()[0]) for score in soup.find_all(name="span", class_="score")]
+all_movies = soup.find_all(name="h3", class_="title")
+print(all_movies)
+movie_titles = [movie.getText() for movie in all_movies]
+movies = movie_titles[::-1]
 
-print(article_texts)
-print(article_links)
-max_value = max(article_upvotes)
-max_index = article_upvotes.index(max_value)
-print(max_value)
-print(article_texts[max_index])
-print(article_links[max_index])
+with open("movies.txt", mode="w") as file:
+    for movie in movies:
+        file.write(f"{movie}\n")
+    
+
+# for title in titles:
+#     movie = title.getText()
+#     movie_titles.append(movie)
+    
+# print(movie_titles)
+    
+
+
+# articles = soup.find_all(name="a", class_="storylink")
+# article_texts = []
+# article_links = []
+# for article_tag in articles:
+#     text = article_tag.getText()
+#     article_texts.append(text)
+#     link = article_tag.get("href")
+#     article_links.append(link)
+
+# article_upvotes = [int(score.getText().split()[0]) for score in soup.find_all(name="span", class_="score")]
+
+# print(article_texts)
+# print(article_links)
+# max_value = max(article_upvotes)
+# max_index = article_upvotes.index(max_value)
+# print(max_value)
+# print(article_texts[max_index])
+# print(article_links[max_index])
 
 
 # all_titles = soup.find_all("storylink")
